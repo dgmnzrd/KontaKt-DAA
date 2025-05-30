@@ -10,7 +10,7 @@ plugins {
 
 android {
     namespace = "com.kontakt.app"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.kontakt.app"
@@ -80,6 +80,8 @@ dependencies {
 
     // Swipe
     implementation ("me.saket.swipe:swipe:1.1.1")
+
+    implementation ("androidx.datastore:datastore-preferences:1.1.1")
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
