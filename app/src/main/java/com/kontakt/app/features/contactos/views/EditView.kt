@@ -8,7 +8,18 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.House
+import androidx.compose.material.icons.filled.LocationCity
+import androidx.compose.material.icons.filled.Mail
+import androidx.compose.material.icons.filled.Map
+import androidx.compose.material.icons.filled.MarkunreadMailbox
+import androidx.compose.material.icons.filled.MeetingRoom
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Phone
+import androidx.compose.material.icons.filled.Public
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -175,28 +186,38 @@ fun EditView(
 
             /* ---------- formulario ---------- */
             OutlinedTextField(
-                value = nombre, onValueChange = { nombre = it },
+                value = nombre,
+                onValueChange = { nombre = it },
                 label = { Text("Name*") },
+                leadingIcon = { Icon(Icons.Filled.Person, contentDescription = null) },
                 isError = !nameOk && nombre.isNotEmpty(),
                 modifier = Modifier.fillMaxWidth()
             )
+
             OutlinedTextField(
-                value = apePat, onValueChange = { apePat = it },
+                value = apePat,
+                onValueChange = { apePat = it },
                 label = { Text("Last name*") },
+                leadingIcon = { Icon(Icons.Filled.AccountCircle, contentDescription = null) },
                 isError = !patOk && apePat.isNotEmpty(),
                 modifier = Modifier.fillMaxWidth()
             )
+
             OutlinedTextField(
-                value = apeMat, onValueChange = { apeMat = it },
+                value = apeMat,
+                onValueChange = { apeMat = it },
                 label = { Text("Middle name*") },
+                leadingIcon = { Icon(Icons.Filled.AccountCircle, contentDescription = null) },
                 isError = !matOk && apeMat.isNotEmpty(),
                 modifier = Modifier.fillMaxWidth()
             )
+
             OutlinedTextField(
-                value          = telefono,
-                onValueChange  = { telefono = it },
-                label          = { Text("Phone*") },
-                isError        = !phoneOk && telefono.isNotEmpty(),
+                value = telefono,
+                onValueChange = { telefono = it },
+                label = { Text("Phone*") },
+                leadingIcon = { Icon(Icons.Filled.Phone, contentDescription = null) },
+                isError = !phoneOk && telefono.isNotEmpty(),
                 supportingText = {
                     if (!phoneOk && telefono.isNotEmpty())
                         Text("10 dígitos o +XX XXX XXX XXXX")
@@ -204,11 +225,13 @@ fun EditView(
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
                 modifier = Modifier.fillMaxWidth()
             )
+
             OutlinedTextField(
-                value          = email,
-                onValueChange  = { email = it },
-                label          = { Text("Email") },
-                isError        = !mailOk && email.isNotEmpty(),
+                value = email,
+                onValueChange = { email = it },
+                label = { Text("Email") },
+                leadingIcon = { Icon(Icons.Filled.Mail, contentDescription = null) },
+                isError = !mailOk && email.isNotEmpty(),
                 supportingText = {
                     if (!mailOk && email.isNotEmpty())
                         Text("Correo no válido")
@@ -220,21 +243,71 @@ fun EditView(
             Divider(Modifier.padding(top = 8.dp))
 
             /* ---------- dirección (opcional) ---------- */
-            OutlinedTextField(calle , { calle  = it }, label = { Text("Street") },  modifier = Modifier.fillMaxWidth())
-            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                OutlinedTextField(numExt, { numExt = it }, label = { Text("Ext.") }, modifier = Modifier.weight(1f))
-                OutlinedTextField(numInt, { numInt = it }, label = { Text("Int.") }, modifier = Modifier.weight(1f))
-                OutlinedTextField(numInt, { numInt = it }, label = { Text("Int.") }, modifier = Modifier.weight(1f))
-            }
-            OutlinedTextField(colonia, { colonia = it }, label = { Text("District") }, modifier = Modifier.fillMaxWidth())
             OutlinedTextField(
-                value = cp, onValueChange = { cp = it },
+                value = calle,
+                onValueChange = { calle = it },
+                label = { Text("Street") },
+                leadingIcon = { Icon(Icons.Filled.Home, contentDescription = null) },
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                OutlinedTextField(
+                    value = numExt,
+                    onValueChange = { numExt = it },
+                    label = { Text("Ext.") },
+                    leadingIcon = { Icon(Icons.Filled.House, contentDescription = null) },
+                    modifier = Modifier
+                        .weight(1f)
+                        .height(64.dp)
+                )
+                OutlinedTextField(
+                    value = numInt,
+                    onValueChange = { numInt = it },
+                    label = { Text("Int.") },
+                    leadingIcon = { Icon(Icons.Filled.MeetingRoom, contentDescription = null) },
+                    modifier = Modifier
+                        .weight(1f)
+                        .height(64.dp)
+                )
+            }
+
+            OutlinedTextField(
+                value = colonia,
+                onValueChange = { colonia = it },
+                label = { Text("District") },
+                leadingIcon = { Icon(Icons.Filled.Map, contentDescription = null) },
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            OutlinedTextField(
+                value = cp,
+                onValueChange = { cp = it },
                 label = { Text("Postal code") },
+                leadingIcon = { Icon(Icons.Filled.MarkunreadMailbox, contentDescription = null) },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 modifier = Modifier.fillMaxWidth()
             )
-            OutlinedTextField(ciudad, { ciudad = it }, label = { Text("City") },   modifier = Modifier.fillMaxWidth())
-            OutlinedTextField(estado, { estado = it }, label = { Text("State") }, modifier = Modifier.fillMaxWidth())
+
+            OutlinedTextField(
+                value = ciudad,
+                onValueChange = { ciudad = it },
+                label = { Text("City") },
+                leadingIcon = { Icon(Icons.Filled.LocationCity, contentDescription = null) },
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            OutlinedTextField(
+                value = estado,
+                onValueChange = { estado = it },
+                label = { Text("State") },
+                leadingIcon = { Icon(Icons.Filled.Public, contentDescription = null) },
+                modifier = Modifier.fillMaxWidth()
+            )
 
             Spacer(Modifier.height(80.dp))
         }

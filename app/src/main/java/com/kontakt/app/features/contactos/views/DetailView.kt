@@ -224,13 +224,21 @@ fun DetailView(
                         Modifier.padding(20.dp),
                         verticalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
-                        Text("Phone",  style = MaterialTheme.typography.labelLarge)
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Icon(Icons.Default.Phone, contentDescription = "Teléfono", modifier = Modifier.size(20.dp))
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text("Phone", style = MaterialTheme.typography.labelLarge)
+                        }
                         Text(c.telefono, style = MaterialTheme.typography.bodyLarge)
 
                         c.email?.let {
                             Spacer(Modifier.height(8.dp))
-                            Text("Email", style = MaterialTheme.typography.labelLarge)
-                            Text(it,      style = MaterialTheme.typography.bodyLarge)
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Icon(Icons.Default.Email, contentDescription = "Correo", modifier = Modifier.size(20.dp))
+                                Spacer(modifier = Modifier.width(8.dp))
+                                Text("Email", style = MaterialTheme.typography.labelLarge)
+                            }
+                            Text(it, style = MaterialTheme.typography.bodyLarge)
                         }
                     }
                 }
@@ -248,7 +256,11 @@ fun DetailView(
                             Modifier.padding(20.dp),
                             verticalArrangement = Arrangement.spacedBy(4.dp)
                         ) {
-                            Text("Address", style = MaterialTheme.typography.labelLarge)
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Icon(Icons.Default.LocationOn, contentDescription = "Dirección", modifier = Modifier.size(20.dp))
+                                Spacer(modifier = Modifier.width(8.dp))
+                                Text("Address", style = MaterialTheme.typography.labelLarge)
+                            }
                             addr.pretty.forEach {
                                 Text(it, style = MaterialTheme.typography.bodyLarge)
                             }
