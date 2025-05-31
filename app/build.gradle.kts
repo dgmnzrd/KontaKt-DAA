@@ -23,6 +23,12 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
+
+        buildConfigField(
+            "String",
+            "MAPS_API_KEY",
+            "\"${project.properties["MAPS_API_KEY"]}\""
+        )
     }
 
     buildTypes {
@@ -43,6 +49,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.1"
@@ -82,6 +89,15 @@ dependencies {
     implementation ("me.saket.swipe:swipe:1.1.1")
 
     implementation ("androidx.datastore:datastore-preferences:1.1.1")
+
+    implementation ("androidx.compose.material:material-icons-extended:1.6.1")
+    implementation ("androidx.compose.ui:ui-text:1.6.1")
+    implementation ("androidx.compose.material3:material3:1.2.1")
+    implementation ("androidx.navigation:navigation-compose:2.7.7")
+
+    implementation ("com.google.accompanist:accompanist-pager:0.33.2-alpha")
+    implementation ("com.google.accompanist:accompanist-pager-indicators:0.33.2-alpha")
+    implementation ("com.airbnb.android:lottie-compose:6.3.0")
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

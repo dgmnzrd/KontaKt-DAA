@@ -5,7 +5,11 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 
-@Database(entities = [Contacto::class], version = 1, exportSchema = false)
+@Database(
+    entities = [Contacto::class],
+    version = 2,               // <-- sube la versión
+    exportSchema = false
+)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun contactoDao(): ContactoDao
 
@@ -17,7 +21,11 @@ abstract class AppDatabase : RoomDatabase() {
                     context.applicationContext,
                     AppDatabase::class.java,
                     "kontakt_db"
-                ).build().also { INSTANCE = it }
+                )
+                    /* ⚠️  Solo para desarrollo — recrea la DB al cambiar versión */
+                    .fallbackToDestructiveMigration()
+                    .build()
+                    .also { INSTANCE = it }
             }
     }
 }
