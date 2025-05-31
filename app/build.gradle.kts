@@ -99,6 +99,8 @@ dependencies {
     implementation ("com.google.accompanist:accompanist-pager-indicators:0.33.2-alpha")
     implementation ("com.airbnb.android:lottie-compose:6.3.0")
 
+    implementation ("com.google.android.gms:play-services-maps:18.0.2")
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
