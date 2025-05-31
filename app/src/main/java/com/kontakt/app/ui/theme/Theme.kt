@@ -1,58 +1,83 @@
 package com.kontakt.app.ui.theme
 
-import android.app.Activity
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.darkColorScheme
-import androidx.compose.material3.dynamicDarkColorScheme
-import androidx.compose.material3.dynamicLightColorScheme
-import androidx.compose.material3.lightColorScheme
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.graphics.Color
+import androidx.compose.foundation.shape.RoundedCornerShape
 
-private val DarkColorScheme = darkColorScheme(
-    primary = Purple80,
-    secondary = PurpleGrey80,
-    tertiary = Pink80
+/* ---------- Light & Dark schemes ---------- */
+private val LightColors = lightColorScheme(
+    primary              = CambridgeBlue,
+    onPrimary            = White,
+    primaryContainer     = CambridgeBlueLight,
+    onPrimaryContainer   = Black,
+
+    secondary            = Copper,
+    onSecondary          = White,
+    secondaryContainer   = CopperLight,
+    onSecondaryContainer = Black,
+
+    tertiary             = PayneGray,
+    onTertiary           = White,
+    tertiaryContainer    = PayneGrayLight,
+    onTertiaryContainer  = Black,
+
+    background           = White,
+    surface              = White,
+    onBackground         = Black,
+    onSurface            = Black
 )
 
-private val LightColorScheme = lightColorScheme(
-    primary = Purple40,
-    secondary = PurpleGrey40,
-    tertiary = Pink40
+private val DarkColors = darkColorScheme(
+    primary              = CambridgeBlue,
+    onPrimary            = Black,
+    primaryContainer     = CambridgeBlueDark,
+    onPrimaryContainer   = White,
 
-    /* Other default colors to override
-    background = Color(0xFFFFFBFE),
-    surface = Color(0xFFFFFBFE),
-    onPrimary = Color.White,
-    onSecondary = Color.White,
-    onTertiary = Color.White,
-    onBackground = Color(0xFF1C1B1F),
-    onSurface = Color(0xFF1C1B1F),
-    */
+    secondary            = Copper,
+    onSecondary          = Black,
+    secondaryContainer   = CopperDark,
+    onSecondaryContainer = White,
+
+    tertiary             = PayneGray,
+    onTertiary           = White,
+    tertiaryContainer    = PayneGrayDark,
+    onTertiaryContainer  = White,
+
+    background           = Black,
+    surface              = Color(0xFF121212),
+    onBackground         = White,
+    onSurface            = White
 )
 
+/* ---------- Tema global ---------- */
 @Composable
 fun KontaKtTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    // Dynamic color is available on Android 12+
     dynamicColor: Boolean = true,
     content: @Composable () -> Unit
 ) {
     val colorScheme = when {
         dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
-            val context = LocalContext.current
-            if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
+            val ctx = LocalContext.current
+            if (darkTheme) dynamicDarkColorScheme(ctx) else dynamicLightColorScheme(ctx)
         }
-
-        darkTheme -> DarkColorScheme
-        else -> LightColorScheme
+        darkTheme -> DarkColors
+        else      -> LightColors
     }
 
     MaterialTheme(
         colorScheme = colorScheme,
-        typography = Typography,
-        content = content
+        typography  = KontaktTypography,
+        shapes      = Shapes(
+            small  = RoundedCornerShape(6.dp),
+            medium = RoundedCornerShape(12.dp),
+            large  = RoundedCornerShape(24.dp)
+        ),
+        content     = content
     )
 }

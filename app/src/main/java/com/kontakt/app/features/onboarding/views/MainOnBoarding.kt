@@ -1,36 +1,50 @@
 package com.kontakt.app.features.onboarding.views
 
-import android.annotation.SuppressLint
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.compose.ui.graphics.Color
+import androidx.navigation.NavController
+import com.kontakt.app.R
 import com.kontakt.app.core.navigation.NavRoutes
+import com.kontakt.app.data.PageData
 import com.kontakt.app.data.local.datastore.StoreBoarding
+import com.google.accompanist.pager.ExperimentalPagerApi
+import com.google.accompanist.pager.rememberPagerState
 import kotlinx.coroutines.launch
 
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
+// … imports sin cambios …
+@OptIn(ExperimentalPagerApi::class)
 @Composable
 fun MainOnBoarding(
-    onFinish: () -> Unit
+    nav: NavController,
+    store: StoreBoarding
 ) {
-    val ctx = LocalContext.current
-    val scope = rememberCoroutineScope()
+    val pages = listOf(
+        PageData(R.raw.agenda  , "Agenda"     , "Organiza tus citas"),
+        PageData(R.raw.contact , "Contacto"   , "Crea contactos fácilmente"),
+        PageData(R.raw.contacts, "Directorio" , "Accede a tus contactos"),
+        PageData(R.raw.search  , "Búsqueda"   , "Encuentra a quien necesites")
+    )
 
-    // TODO: reemplaza por tu Pager + páginas personalizadas
-    Scaffold(
-        bottomBar = {
-            Button(
-                modifier = Modifier.fillMaxWidth(),
-                onClick = {
-                    scope.launch {
-                        StoreBoarding.setDone(ctx)
-                        onFinish()
-                    }
-                }
-            ) { Text("Empezar") }
+    /* 🔄  rememberPagerState ya no recibe pageCount */
+    val pagerState = rememberPagerState(initialPage = 0)
+    val scope      = rememberCoroutineScope()
+
+    OnBoardingPager(
+        items      = pages,
+        pagerState = pagerState,
+        modifier   = Modifier
+            .fillMaxSize()
+            .background(Color(0xFFF7F5FA)),
+        onFinish = {
+            scope.launch { store.setDone(nav.context) }
+            nav.navigate(NavRoutes.HOME) {
+                popUpTo(NavRoutes.ONBOARDING) { inclusive = true }
+            }
         }
-    ) { /* contenido */ }
+    )
 }
