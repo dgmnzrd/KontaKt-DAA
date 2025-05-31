@@ -21,7 +21,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.kontakt.app.data.local.database.Contacto
 import com.kontakt.app.data.local.database.Direccion
 import com.kontakt.app.features.contactos.viewmodel.ContactoViewModel
-import com.kontakt.app.ui.theme.CambridgeBlue
 import com.kontakt.app.ui.theme.White
 import kotlinx.coroutines.launch
 import java.text.Normalizer
