@@ -17,6 +17,30 @@
 
 ---
 
+## 🗺️ **Geographic Features**
+
+KontaKt includes intelligent address handling with real-world mapping capabilities:
+
+### **Address-to-Coordinates Conversion**
+```kotlin
+// Automatic geocoding using Android's Geocoder API
+val geocoder = Geocoder(context)
+val addresses = geocoder.getFromLocationName(addressQuery, 1)
+val coordinates = addresses?.firstOrNull()?.let { 
+    Pair(it.latitude, it.longitude) 
+}
+```
+
+### **Google Maps Integration**
+- **Tap-to-Navigate**: Click on coordinates to open Google Maps instantly
+- **Precise Location**: Automatic conversion from street addresses to GPS coordinates
+- **Offline Geocoding**: Uses Android's built-in Geocoder service
+- **Smart Address Parsing**: Intelligently combines street, city, postal code, and state
+
+> 📍 **Example**: "Calle Revolución 123, Centro, 27000, Torreón, Coahuila" → `25.548°N, 103.447°W` → 📱 *Opens Google Maps*
+
+---
+
 ## 🌟 **Overview**
 
 KontaKt redefines contact management with a **privacy-first**, **offline-only** approach. Every feature has been meticulously designed and coded from scratch – from the custom color palette and typography system to comprehensive form validation and smooth animations.
@@ -38,6 +62,7 @@ KontaKt redefines contact management with a **privacy-first**, **offline-only** 
 - **Smart Validation** – Real-time form validation with helpful error messages
 - **Grouped Display** – Contacts organized alphabetically for quick access
 - **Dynamic Avatars** – Beautiful color-coded avatars generated from contact names
+- **🗺️ Geographic Integration** – Address-to-coordinates conversion with direct Google Maps integration
 
 ### 🎨 **Beautiful Design System**
 - **Custom Material 3 Theme** – Handcrafted color palette with Cambridge Blue, Copper, and Payne Gray
@@ -122,6 +147,7 @@ KontaKt follows **Clean Architecture** principles with a clear separation of con
 - **Lottie Compose 6.3** – Smooth animations
 - **Accompanist Pager** – Onboarding carousel
 - **Swipe Actions** – Interactive gestures
+- **Google Play Services Maps** – Address geocoding and Maps integration
 
 ---
 
