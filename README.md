@@ -152,8 +152,8 @@ val emailRegex = """^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$""".toRegex(
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/yourusername/kontakt.git
-   cd kontakt
+   git clone https://github.com/dgmnzrd/KontaKt-DAA.git
+   cd KontaKt-DAA
    ```
 
 2. **Add Montserrat fonts**
