@@ -1,19 +1,27 @@
 package com.kontakt.app.features.contactos.views
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.kontakt.app.features.contactos.viewmodel.ContactoViewModel
+import com.kontakt.app.ui.theme.CambridgeBlue
+import com.kontakt.app.ui.theme.White
+import java.text.Normalizer
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -21,116 +29,189 @@ fun AddView(
     vm: ContactoViewModel = viewModel(),
     onBack: () -> Unit
 ) {
-    /* --- Estados de los campos --- */
-    var nombre         by remember { mutableStateOf("") }
-    var apellidoP      by remember { mutableStateOf("") }
-    var apellidoM      by remember { mutableStateOf("") }
-    var telefono       by remember { mutableStateOf("") }
-    var email          by remember { mutableStateOf("") }
-    var calle          by remember { mutableStateOf("") }
-    var numExt         by remember { mutableStateOf("") }
-    var numInt         by remember { mutableStateOf("") }
-    var colonia        by remember { mutableStateOf("") }
-    var cp             by remember { mutableStateOf("") }
-    var ciudad         by remember { mutableStateOf("") }
-    var estado         by remember { mutableStateOf("") }
+    /* ------------ estados ------------ */
+    var nombre   by remember { mutableStateOf("") }
+    var apePat   by remember { mutableStateOf("") }
+    var apeMat   by remember { mutableStateOf("") }
+    var telefono by remember { mutableStateOf("") }
+    var email    by remember { mutableStateOf("") }
+
+    var calle    by remember { mutableStateOf("") }
+    var numExt   by remember { mutableStateOf("") }
+    var numInt   by remember { mutableStateOf("") }
+    var colonia  by remember { mutableStateOf("") }
+    var cp       by remember { mutableStateOf("") }
+    var ciudad   by remember { mutableStateOf("") }
+    var estado   by remember { mutableStateOf("") }
+
+    /* ------------ regex ------------ */
+    val PHONE_RE = Regex(
+        """^(\d{10})$|^\+\d{1,3}\s\d{3}(?:\s\d{3}\s\d{4})$"""
+    )
+    val MAIL_RE = Regex("""^[A-Za-z0-9._%+\-]+@[A-Za-z0-9.\-]+\.[A-Za-z]{2,}$""")
+
+    /* ------------ validaciones ------------ */
+    val nameOk  = nombre.isNotBlank()
+    val patOk   = apePat.isNotBlank()
+    val matOk   = apeMat.isNotBlank()
+
+    val phoneOk = telefono.matches(PHONE_RE)
+    val mailOk  = email.isBlank() || email.matches(MAIL_RE)
+
+    val formOk  = nameOk && patOk && matOk && phoneOk && mailOk
+
+    val scroll = rememberScrollState()
 
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Nuevo contacto") },
+                title = {
+                    Text(
+                        "New contact",
+                        style = MaterialTheme.typography.displaySmall.copy(fontWeight = FontWeight.Bold)
+                    )
+                },
                 navigationIcon = {
-                    IconButton(onClick = onBack) {
-                        Icon(Icons.Filled.ArrowBack, contentDescription = "Atrás")
-                    }
+                    IconButton(onClick = onBack) { Icon(Icons.Default.ArrowBack, null) }
                 }
             )
         },
-        floatingActionButton = {
-            FloatingActionButton(
-                onClick = {
-                    vm.save(
-                        nombre, apellidoP, apellidoM, telefono, email.ifBlank { null },
-                        calle, numExt, numInt.ifBlank { null }, colonia, cp, ciudad, estado
-                    )
-                    onBack()
+        bottomBar = {
+            Surface(shadowElevation = 4.dp) {
+                Row(
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 20.dp, vertical = 12.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    TextButton(onClick = onBack) {
+                        Text(
+                            "Cancel",
+                            style = MaterialTheme.typography.titleMedium,
+                            color = MaterialTheme.colorScheme.tertiary
+                        )
+                    }
+                    Button(
+                        enabled = formOk,
+                        shape   = RoundedCornerShape(50),
+                        onClick = {
+                            vm.save(
+                                nombre, apePat, apeMat, telefono,
+                                email.ifBlank { null },
+                                calle, numExt, numInt.ifBlank { null },
+                                colonia, cp, ciudad, estado
+                            )
+                            onBack()
+                        }
+                    ) {
+                        Text(
+                            "Save",
+                            style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold)
+                        )
+                    }
                 }
-            ) { Icon(Icons.Filled.Check, contentDescription = "Guardar") }
-        }
+            }
+        },
+        containerColor = MaterialTheme.colorScheme.background
     ) { padding ->
 
-        /* ---------- CONTENIDO CON SCROLL ---------- */
         Column(
-            modifier = Modifier
+            Modifier
                 .fillMaxSize()
                 .padding(padding)
-                .padding(16.dp)
-                .verticalScroll(rememberScrollState()),
-            verticalArrangement = Arrangement.spacedBy(12.dp)
+                .verticalScroll(scroll)
+                .padding(horizontal = 24.dp, vertical = 16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(20.dp)
         ) {
-            /* --- Datos personales --- */
+
+            /* ------------ Avatar ------------ */
+            Box(
+                Modifier
+                    .size(96.dp)
+                    .clip(CircleShape)
+                    .background(CambridgeBlue),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    initial(nombre),
+                    color = White,
+                    style = MaterialTheme.typography.displaySmall.copy(fontWeight = FontWeight.Bold)
+                )
+            }
+
+            /* ------------ Datos personales ------------ */
             OutlinedTextField(
-                value = nombre, onValueChange = { nombre = it },
-                label = { Text("Nombre") }, modifier = Modifier.fillMaxWidth()
-            )
-            OutlinedTextField(
-                value = apellidoP, onValueChange = { apellidoP = it },
-                label = { Text("Apellido paterno") }, modifier = Modifier.fillMaxWidth()
-            )
-            OutlinedTextField(
-                value = apellidoM, onValueChange = { apellidoM = it },
-                label = { Text("Apellido materno") }, modifier = Modifier.fillMaxWidth()
-            )
-            OutlinedTextField(
-                value = telefono, onValueChange = { telefono = it },
-                label = { Text("Teléfono") },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
+                value = nombre,
+                onValueChange = { nombre = it },
+                label = { Text("Name*") },
+                isError = !nameOk && nombre.isNotEmpty(),
                 modifier = Modifier.fillMaxWidth()
             )
             OutlinedTextField(
-                value = email, onValueChange = { email = it },
-                label = { Text("Mail") },
+                value = apePat,
+                onValueChange = { apePat = it },
+                label = { Text("Last name*") },
+                isError = !patOk && apePat.isNotEmpty(),
+                modifier = Modifier.fillMaxWidth()
+            )
+            OutlinedTextField(
+                value = apeMat,
+                onValueChange = { apeMat = it },
+                label = { Text("Middle name*") },
+                isError = !matOk && apeMat.isNotEmpty(),
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            OutlinedTextField(
+                value = telefono,
+                onValueChange = { telefono = it },
+                label = { Text("Phone*") },
+                isError = !phoneOk && telefono.isNotEmpty(),
+                supportingText = {
+                    if (!phoneOk && telefono.isNotEmpty())
+                        Text("10 dígitos o +XX XXX XXX XXXX")
+                },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            OutlinedTextField(
+                value = email,
+                onValueChange = { email = it },
+                label = { Text("Email") },
+                isError = !mailOk && email.isNotEmpty(),
+                supportingText = {
+                    if (!mailOk && email.isNotEmpty())
+                        Text("Correo no válido")
+                },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
                 modifier = Modifier.fillMaxWidth()
             )
 
-            Divider()
+            Divider(Modifier.padding(top = 8.dp))
 
-            /* --- Dirección --- */
-            OutlinedTextField(
-                value = calle, onValueChange = { calle = it },
-                label = { Text("Calle") }, modifier = Modifier.fillMaxWidth()
-            )
+            /* ------------ Dirección (opcional) ------------ */
+            OutlinedTextField(calle , { calle  = it }, label = { Text("Street") },  modifier = Modifier.fillMaxWidth())
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                OutlinedTextField(
-                    value = numExt, onValueChange = { numExt = it },
-                    label = { Text("Num. ext") }, modifier = Modifier.weight(1f)
-                )
-                OutlinedTextField(
-                    value = numInt, onValueChange = { numInt = it },
-                    label = { Text("Num. int (opcional)") }, modifier = Modifier.weight(1f)
-                )
+                OutlinedTextField(numExt, { numExt = it }, label = { Text("Ext.") }, modifier = Modifier.weight(1f))
+                OutlinedTextField(numInt, { numInt = it }, label = { Text("Int.") }, modifier = Modifier.weight(1f))
             }
-            OutlinedTextField(
-                value = colonia, onValueChange = { colonia = it },
-                label = { Text("Colonia") }, modifier = Modifier.fillMaxWidth()
-            )
-            OutlinedTextField(
-                value = cp, onValueChange = { cp = it },
-                label = { Text("C.P.") },
+            OutlinedTextField(colonia, { colonia = it }, label = { Text("District") },   modifier = Modifier.fillMaxWidth())
+            OutlinedTextField(cp     , { cp      = it }, label = { Text("Postal code") },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                modifier = Modifier.fillMaxWidth()
-            )
-            OutlinedTextField(
-                value = ciudad, onValueChange = { ciudad = it },
-                label = { Text("Ciudad") }, modifier = Modifier.fillMaxWidth()
-            )
-            OutlinedTextField(
-                value = estado, onValueChange = { estado = it },
-                label = { Text("Estado") }, modifier = Modifier.fillMaxWidth()
-            )
+                modifier = Modifier.fillMaxWidth())
+            OutlinedTextField(ciudad , { ciudad  = it }, label = { Text("City") },     modifier = Modifier.fillMaxWidth())
+            OutlinedTextField(estado , { estado  = it }, label = { Text("State") },    modifier = Modifier.fillMaxWidth())
 
-            Spacer(modifier = Modifier.height(80.dp)) // espacio para flotar sobre FAB
+            Spacer(Modifier.height(80.dp))
         }
     }
 }
+
+/* ---------- util ---------- */
+private fun initial(text: String): String =
+    Normalizer.normalize(text.trim(), Normalizer.Form.NFD)
+        .replace("\\p{InCombiningDiacriticalMarks}+".toRegex(), "")
+        .uppercase()
+        .firstOrNull()?.toString() ?: "#"

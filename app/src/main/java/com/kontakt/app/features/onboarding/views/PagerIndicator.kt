@@ -1,7 +1,6 @@
 package com.kontakt.app.features.onboarding.views
 
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -12,13 +11,15 @@ import com.google.accompanist.pager.PagerState
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
-fun PagerIndicator(pagerState: PagerState, modifier: Modifier = Modifier) {
+fun PagerIndicator(pagerState: PagerState) {
     HorizontalPagerIndicator(
-        pagerState = pagerState,
-        modifier   = modifier
-            .fillMaxWidth()
-            .padding(16.dp),
-        activeColor   = MaterialTheme.colorScheme.primary,
-        inactiveColor = MaterialTheme.colorScheme.surfaceVariant
+        pagerState   = pagerState,
+        modifier     = Modifier
+            .padding(bottom = 8.dp)
+            .height(16.dp),
+        activeColor   = MaterialTheme.colorScheme.secondary,
+        inactiveColor = MaterialTheme.colorScheme.onSurface.copy(alpha = .3f),
+        indicatorWidth  = 10.dp,
+        spacing        = 8.dp
     )
 }

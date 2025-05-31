@@ -3,6 +3,7 @@ package com.kontakt.app
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.*
@@ -26,7 +27,7 @@ class MainActivity : ComponentActivity() {
         val repo = ContactosRepository(AppDatabase.get(this).contactoDao())
 
         setContent {
-            KontaKtTheme {
+            KontaKtTheme(darkTheme = false, dynamicColor = false) {
 
                 /* 1️⃣  Leer DataStore — valor nulo mientras carga */
                 val done: Boolean? by StoreBoarding
@@ -71,10 +72,18 @@ class MainActivity : ComponentActivity() {
 
                     /* ---------- DETAIL ---------- */
                     composable(NavRoutes.DETAIL) { backEntry ->
-                        val id = backEntry.arguments?.getString("contactId")?.toLong() ?: return@composable
+                        val id = backEntry.arguments
+                            ?.getString("contactId")
+                            ?.toLong() ?: return@composable
+
                         DetailView(
                             contactoId = id,
-                            vm    = ContactoViewModel(repo),
+                            vm         = ContactoViewModel(repo),
+
+                            /* ← nuevo: navegar a la ruta EDIT con ese id */
+                            onEdit = { navController.navigate(NavRoutes.EDIT.withId(it)) },
+
+                            /* back sin cambios */
                             onBack = { navController.popBackStack() }
                         )
                     }

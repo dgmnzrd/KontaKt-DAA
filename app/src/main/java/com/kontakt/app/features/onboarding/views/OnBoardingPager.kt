@@ -8,7 +8,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.runtime.getValue
 import com.airbnb.lottie.compose.*
 import com.google.accompanist.pager.*
 import com.kontakt.app.data.PageData
@@ -21,55 +22,61 @@ fun OnBoardingPager(
     modifier: Modifier = Modifier,
     onFinish: () -> Unit
 ) {
-    Column(
+    Box(
         modifier = modifier,
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.SpaceBetween
+        contentAlignment = Alignment.BottomCenter
     ) {
 
-        /* ---------- Páginas ---------- */
+        /* ----- Páginas animadas ----- */
         HorizontalPager(
-            count = items.size,          // 👈 nuevo parámetro obligatorio
-            state = pagerState
+            state = pagerState,
+            count = items.size
         ) { index ->
             val page = items[index]
 
             Column(
                 Modifier
-                    .fillMaxWidth()
-                    .weight(1f),
+                    .fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
-                /* Animación Lottie */
-                val compositionResult = rememberLottieComposition(
+                val comp by rememberLottieComposition(
                     LottieCompositionSpec.RawRes(page.animRes)
                 )
                 LottieAnimation(
-                    compositionResult.value,      // 👈 se usa .value
-                    iterations = LottieConstants.IterateForever,
-                    modifier   = Modifier.size(180.dp)
+                    composition = comp,
+                    iterations  = LottieConstants.IterateForever,
+                    modifier    = Modifier.size(200.dp)
                 )
                 Spacer(Modifier.height(32.dp))
 
-                /* Texto */
-                Text(page.titulo, fontSize = 26.sp, fontWeight = FontWeight.Bold)
+                /* ------- Texto de la página ------- */
+                Text(
+                    page.titulo,
+                    style = MaterialTheme.typography.displaySmall
+                        .copy(fontWeight = FontWeight.Bold),
+                    color = MaterialTheme.colorScheme.tertiary
+                )
                 Text(
                     page.descripcion,
-                    fontSize = 18.sp,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                    style = MaterialTheme.typography.titleMedium,      // Montserrat 18 sp
+                    color = MaterialTheme.colorScheme.tertiary
                 )
             }
         }
 
-        /* Indicadores */
-        PagerIndicator(pagerState, Modifier.padding(8.dp))
-
-        /* Botón Final */
-        if (pagerState.currentPage == items.lastIndex) {
-            ButtonFinish(onFinish, Modifier.padding(bottom = 24.dp))
-        } else {
-            Spacer(Modifier.height(56.dp)) // reserva espacio
+        /* ----- Indicadores y botón ----- */
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier
+                .fillMaxWidth()
+                .navigationBarsPadding()
+        ) {
+            PagerIndicator(pagerState)
+            if (pagerState.currentPage == items.lastIndex) {
+                ButtonFinish(onFinish, Modifier
+                    .padding(vertical = 20.dp, horizontal = 24.dp))
+            }
         }
     }
 }
