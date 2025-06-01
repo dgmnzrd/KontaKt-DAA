@@ -1,7 +1,9 @@
 package com.kontakt.app.features.contactos.views
 
 /* ---------- Android & KotlinX ---------- */
+import android.content.Intent
 import android.location.Geocoder
+import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -224,21 +226,57 @@ fun DetailView(
                         Modifier.padding(20.dp),
                         verticalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
+                        // Phone row
                         Row(verticalAlignment = Alignment.CenterVertically) {
-                            Icon(Icons.Default.Phone, contentDescription = "Teléfono", modifier = Modifier.size(20.dp))
+                            Icon(
+                                Icons.Default.Phone,
+                                contentDescription = "Teléfono",
+                                modifier = Modifier.size(20.dp)
+                            )
                             Spacer(modifier = Modifier.width(8.dp))
                             Text("Phone", style = MaterialTheme.typography.labelLarge)
                         }
-                        Text(c.telefono, style = MaterialTheme.typography.bodyLarge)
+                        Text(
+                            c.telefono,
+                            style = MaterialTheme.typography.bodyLarge,
+                            modifier = Modifier.clickable {
+                                // Open device dialer with number pre-filled
+                                val intent = Intent(
+                                    Intent.ACTION_DIAL,
+                                    Uri.parse("tel:${c.telefono}")
+                                )
+                                ctx.startActivity(intent)
+                            }
+                        )
 
                         c.email?.let {
                             Spacer(Modifier.height(8.dp))
+                            // Email row
                             Row(verticalAlignment = Alignment.CenterVertically) {
-                                Icon(Icons.Default.Email, contentDescription = "Correo", modifier = Modifier.size(20.dp))
+                                Icon(
+                                    Icons.Default.Email,
+                                    contentDescription = "Correo",
+                                    modifier = Modifier.size(20.dp)
+                                )
                                 Spacer(modifier = Modifier.width(8.dp))
                                 Text("Email", style = MaterialTheme.typography.labelLarge)
                             }
-                            Text(it, style = MaterialTheme.typography.bodyLarge)
+                            Text(
+                                it,
+                                style = MaterialTheme.typography.bodyLarge,
+                                modifier = Modifier.clickable {
+                                    // Launch email chooser
+                                    val emailIntent = Intent(
+                                        Intent.ACTION_SENDTO,
+                                        Uri.parse("mailto:${c.email}")
+                                    )
+                                    val chooser = Intent.createChooser(
+                                        emailIntent,
+                                        "Send email using"
+                                    )
+                                    ctx.startActivity(chooser)
+                                }
+                            )
                         }
                     }
                 }
